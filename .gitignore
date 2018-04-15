@@ -34,6 +34,7 @@
 
 # Build directories
 x64
+bin
 
 # Project directories
 .vs

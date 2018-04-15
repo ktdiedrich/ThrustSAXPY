@@ -20,5 +20,5 @@
 
 # Linux compile command, may need to update g++ version
 
-
-nvcc --expt-extended-lambda -ccbin g++-4.8 -std c++11 -gencode=arch=compute_30,code=\"sm_30,compute_30\" kernel.cu -o ThrustSAXPY
+mkdir -p ../bin
+nvcc --expt-extended-lambda -ccbin g++-4.8 -std c++11 -gencode=arch=compute_30,code=\"sm_30,compute_30\" kernel.cu -o ../bin/ThrustSAXPY
