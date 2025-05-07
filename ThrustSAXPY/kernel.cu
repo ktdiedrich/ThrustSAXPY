@@ -49,6 +49,7 @@ Based on https://github.com/thrust/thrust/wiki/Quick-Start-Guide
 /* Simplify names with aliases */
 typedef float CalcNumber;
 typedef thrust::device_vector<CalcNumber> DeviceNumVector;
+int const TEST_SIZE = 10000000; // Number of iterations for test
 
 // Function definitions, can be in header file. In one file for simplicity of sample project. 
 
@@ -101,7 +102,7 @@ void testSaxpy()
 	// CalcNumber expected[] = { 3,  5,  7,  9, 11, 13, 15, 17, 19, 21 };
 	CalcNumber const a1 = 2.0;
 	CalcNumber const addY = 4.0;
-	int const VECTOR_SIZE = 10;
+	int const VECTOR_SIZE = TEST_SIZE;
 	DeviceNumVector x1(VECTOR_SIZE);
 	DeviceNumVector y1(VECTOR_SIZE);
 	thrust::sequence(x1.begin(), x1.end());
@@ -123,7 +124,7 @@ void testSaxpy()
 
 void testReduce()
 {
-	DeviceNumVector D(10);
+	DeviceNumVector D(TEST_SIZE);
 	thrust::sequence(D.begin(), D.end());
 	std::cout << "Reduce: ";
 	thrust::copy(D.begin(), D.end(), std::ostream_iterator<CalcNumber>(std::cout, ", "));
