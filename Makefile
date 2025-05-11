@@ -2,7 +2,7 @@
 NVCC = nvcc
 GPP = g++
 CXXFLAGS = -std=c++11 -ggdb3
-NVCCFLAGS = --expt-extended-lambda -std=c++11 -G
+NVCCFLAGS = --expt-extended-lambda -std=c++11 -G -g
 
 # Check if nvcc is available
 NVCC_CHECK := $(shell command -v $(NVCC) 2> /dev/null)

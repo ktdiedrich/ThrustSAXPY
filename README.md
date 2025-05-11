@@ -39,6 +39,18 @@ and CUDA_INCLUDE_PATH, default="-I/usr/include" in the Makefile.
  watch -n2 nvidia-smi
 ```
 
+# Debugging
+
+Under DEB package manger Linux or WSL 
+Install debuggers: 
+
+```
+sudo apt update
+sudo apt install gdb cuda-gdb
+```
+
+Configure `cuda-gdb` launchers for VS Code in `.vscode/launch.json`
+
 
 ## License
 
