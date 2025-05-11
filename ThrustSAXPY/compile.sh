@@ -20,6 +20,12 @@
 
 # Linux compile command, may need to update g++ version
 
-COMPUTE_CAP=89
+## Set the compute capability for the target GPU
+COMPUTE_CAPABILITY=89
 mkdir -p ../bin
-nvcc --expt-extended-lambda -ccbin g++ -std c++11 -gencode=arch=compute_${COMPUTE_CAP},code=\"sm_${COMPUTE_CAP},compute_${COMPUTE_CAP}\" kernel.cu -o ../bin/ThrustSAXPY
+
+## See the include file paths
+nvcc --expt-extended-lambda -ccbin g++ -std c++11 -E -gencode=arch=compute_${COMPUTE_CAPABILITY},code=\"sm_${COMPUTE_CAPABILITY},compute_${COMPUTE_CAPABILITY}\" thrustSAXPY.cu -o ../bin/ThrustSAXPY.i
+
+## Compile with debug info
+nvcc --expt-extended-lambda -ccbin g++ -std c++11 -gencode=arch=compute_${COMPUTE_CAPABILITY},code=\"sm_${COMPUTE_CAPABILITY},compute_${COMPUTE_CAPABILITY}\" thrustSAXPY.cu -o ../bin/ThrustSAXPY

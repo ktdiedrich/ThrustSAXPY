@@ -37,6 +37,16 @@ Command line compile:
 
 see ThrustSAXPY/compile.sh script
 
+
+## Montitoring usage
+
+### Watch GPU usage
+
+```
+ watch -n2 nvidia-smi
+```
+
+
 ## License
 
 /*=========================================================================

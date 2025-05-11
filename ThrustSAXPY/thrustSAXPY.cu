@@ -99,7 +99,6 @@ void saxpy_slow(CalcNumber A, DeviceNumVector & X, DeviceNumVector & Y)
 
 void testSaxpy()
 {
-	// CalcNumber expected[] = { 3,  5,  7,  9, 11, 13, 15, 17, 19, 21 };
 	CalcNumber const a1 = 2.0;
 	CalcNumber const addY = 4.0;
 	int const VECTOR_SIZE = TEST_SIZE;
