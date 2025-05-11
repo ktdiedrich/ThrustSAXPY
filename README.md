@@ -1,4 +1,4 @@
-# Algoorithms implemented in Nvida Thrust library for Nvdia GPUS
+# Algorithms implemented in Nvida Thrust library for Nvdia GPUs.
 
 ## ThrustSAXPY
 
@@ -18,14 +18,18 @@ Based on https://github.com/thrust/thrust/wiki/Quick-Start-Guide
 
 ## Compile
 
+### Environment
+
+May need to adjust CUDA_LIB_PATH, default="-L/lib/x86_64-linux-gnu"
+and CUDA_INCLUDE_PATH, default="-I/usr/include" in the Makefile.
+
 ### Windows compile
 
 [Install Windows Susbsytem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) to compile and use GPUs.
 
 ### Linux compile
 
-`ThrustSAXPY/compile.sh`
-
+`make`
 
 ## Montitoring usage
 
