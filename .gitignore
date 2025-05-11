@@ -37,7 +37,7 @@ x64
 bin
 
 # Project directories
-.vs
+.vscode
 *.user
 
 # Temporary editor files

@@ -40,10 +40,12 @@ BIN_DIR = bin
 # Source files
 SAXPY_SRC = $(SRC_DIR)/thrustSAXPY.cu
 DETECT_SRC = $(SRC_DIR)/detect_compute_capability.cpp
+NN_SRC = $(SRC_DIR)/thrustNN.cu
 
 # Output binaries
 SAXPY_BIN = $(BIN_DIR)/ThrustSAXPY
 DETECT_BIN = $(BIN_DIR)/detect_compute_capability
+NN_BIN = $(BIN_DIR)/thrustNN
 
 # Default compute capability (fallback)
 DEFAULT_COMPUTE_CAPABILITY = 30
@@ -52,7 +54,7 @@ DEFAULT_COMPUTE_CAPABILITY = 30
 COMPUTE_CAPABILITY = $(shell $(DETECT_BIN) 2>/dev/null || echo $(DEFAULT_COMPUTE_CAPABILITY))
 
 # Targets
-all: $(DETECT_BIN) $(SAXPY_BIN)
+all: $(DETECT_BIN) $(SAXPY_BIN) $(NN_BIN)
 
 # Compile detect_compute_capability
 $(DETECT_BIN): $(DETECT_SRC)
@@ -63,6 +65,13 @@ $(DETECT_BIN): $(DETECT_SRC)
 $(SAXPY_BIN): $(SAXPY_SRC) $(DETECT_BIN)
 	@mkdir -p $(BIN_DIR)
 	$(NVCC) $(NVCCFLAGS) -ccbin $(GPP) -gencode=arch=compute_$(COMPUTE_CAPABILITY),code=\"sm_$(COMPUTE_CAPABILITY),compute_$(COMPUTE_CAPABILITY)\" $< -o $@
+
+
+# Compile thrustNN
+$(NN_BIN): $(NN_SRC)
+	@mkdir -p $(BIN_DIR)
+	$(NVCC) $(NVCCFLAGS) -ccbin $(GPP) -gencode=arch=compute_$(COMPUTE_CAPABILITY),code=\"sm_$(COMPUTE_CAPABILITY),compute_$(COMPUTE_CAPABILITY)\" $< -o $@
+
 
 # Clean up binaries
 clean:
