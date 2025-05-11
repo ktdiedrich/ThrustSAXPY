@@ -1,41 +1,30 @@
-# ThrustSAXPY
+# Algoorithms implemented in Nvida Thrust library for Nvdia GPUS
+
+## ThrustSAXPY
 
 SAXPY operation: y &lt;-a * x + y x = vector, y = vector, a = scalar constant ; on GPU
 
 @author Karl Diedrich, PhD ktdiedrich@gmail.com
 
-## Formula
+### Formula
 
 SAXPY operation y <-a * x + y
 x = vector, y = vector, a = scalar constant
 
-## Implementation
+### Implementation
 
 Based on https://github.com/thrust/thrust/wiki/Quick-Start-Guide
 
-## Project
-
-Started with Visual Studio CUDA template
 
 ## Compile
 
 ### Windows compile
 
-VS 2017 compiler not always compatible with CUDA toolkit
-Project -> PROJECT_NAME properties -> Configuration Properties-> general -> Platform toolset: choose Visual Studio 2015 (v140)
-Project-> PROJECT_NAME properties -> Configuration Properties -> CUDA C/C++ -> Command Line -> Additional Options: --expt-extended-lambda  
-
-Command line compile:
-1>...\ThrustSAXPY\ThrustSAXPY>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\bin\nvcc.exe" -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64" -x cu  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\include"  -G   --keep-dir x64\Debug -maxrregcount=0  --machine 64 --compile  --expt-extended-lambda  -g   -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /FS /Zi /RTC1 /MDd " -o x64\Debug\kernel.cu.obj "...\ThrustSAXPY\ThrustSAXPY\kernel.cu" -clean
-1>kernel.cu
-1>Compiling CUDA source file kernel.cu...
-1>
-1>...\ThrustSAXPY\ThrustSAXPY>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\bin\nvcc.exe" -gencode=arch=compute_30,code=\"sm_30,compute_30\" --use-local-env --cl-version 2015 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64" -x cu  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\include"  -G   --keep-dir x64\Debug -maxrregcount=0  --machine 64 --compile -cudart static --expt-extended-lambda -g   -DWIN32 -DWIN64 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /FS /Zi /RTC1 /MDd " -o x64\Debug\kernel.cu.obj "...\ThrustSAXPY\ThrustSAXPY\kernel.cu"
-
+[Install Windows Susbsytem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) to compile and use GPUs.
 
 ### Linux compile
 
-see ThrustSAXPY/compile.sh script
+`ThrustSAXPY/compile.sh`
 
 
 ## Montitoring usage
