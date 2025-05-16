@@ -35,6 +35,7 @@
 # Build directories
 x64
 bin
+build
 
 # Project directories
 *.user

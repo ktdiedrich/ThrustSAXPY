@@ -29,7 +29,12 @@ and CUDA_INCLUDE_PATH, default="-I/usr/include" in the Makefile.
 
 ### Linux compile
 
-`make`
+```
+mkdir build
+cd build
+cmake ..
+make
+```
 
 ## Montitoring usage
 
@@ -37,6 +42,14 @@ and CUDA_INCLUDE_PATH, default="-I/usr/include" in the Makefile.
 
 ```
  watch -n2 nvidia-smi
+```
+
+###
+
+Run executeable in `build/`
+```
+./thrustSAXPY
+./thrustNN  
 ```
 
 # Debugging
