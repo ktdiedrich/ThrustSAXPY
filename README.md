@@ -21,13 +21,15 @@ Based on https://github.com/thrust/thrust/wiki/Quick-Start-Guide
 ### Environment
 
 May need to adjust CUDA_LIB_PATH, default="-L/lib/x86_64-linux-gnu"
-and CUDA_INCLUDE_PATH, default="-I/usr/include" in the Makefile.
+and CUDA_INCLUDE_PATH, default="-I/usr/include" in the build configuration.
 
 ### Windows compile
 
 [Install Windows Susbsytem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) to compile and use GPUs.
 
 ### Linux compile
+
+Install [cmake](https://cmake.org/) build system.
 
 ```
 mkdir build
