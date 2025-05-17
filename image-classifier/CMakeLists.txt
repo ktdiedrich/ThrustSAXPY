@@ -27,8 +27,6 @@ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --expt-extended-lambda")
 
 include_directories(include)
 include_directories(src)
-include_directories(src/utils)
-# include_directories(/usr/include/opencv4)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 file(GLOB_RECURSE SOURCES "src/*.cu")
