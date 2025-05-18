@@ -8,6 +8,13 @@ find_package(CUDA REQUIRED)
 
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --expt-extended-lambda")
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb3")
+set(CMAKE_CUDA_FLAGS_DEBUG "${CMAKE_CUDA_FLAGS_DEBUG} -G -g")
+
+
 include_directories(include)
 
 add_executable(detect_compute_capability src/detect_compute_capability.cpp)
@@ -25,3 +32,6 @@ target_link_libraries(thrustNN ${CUDA_CUDA_LIBRARIES})
 target_link_libraries(detect_compute_capability PRIVATE cudart)
 target_include_directories(detect_compute_capability PRIVATE /usr/include)
 target_link_directories(detect_compute_capability PRIVATE /lib/x86_64-linux-gnu)
+
+# Build subdirectories
+add_subdirectory(image-classifier)
