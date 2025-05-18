@@ -20,7 +20,6 @@ FetchContent_Declare(
   URL https://github.com/google/googletest/archive/refs/heads/main.zip
 )
 FetchContent_MakeAvailable(googletest)
-
 enable_testing()
 include(GoogleTest)
 
@@ -30,6 +29,8 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_executable(test_gtest tests/test_gtest.cpp)
 target_link_libraries(test_gtest gtest_main)
+
+gtest_discover_tests(test_gtest)
 
 set(SOURCES
     src/main.cu
