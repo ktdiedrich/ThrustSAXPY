@@ -1,0 +1,15 @@
+name: image-classifier
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - matplotlib
+  - pytorch
+  - torchvision
+  - pip:
+      - medmnist
+      - opencv-python

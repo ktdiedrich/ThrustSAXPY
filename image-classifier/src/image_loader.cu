@@ -1,29 +1,43 @@
 #include "image_loader.h"
+#include <cnpy.h>
 #include <opencv2/opencv.hpp>
 #include <thrust/device_vector.h>
 #include <thrust/copy.h>
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
-ImageLoader::ImageLoader(const std::string& directory) : imageDirectory(directory) {}
 
-std::vector<thrust::device_vector<float>> ImageLoader::load_images(const std::vector<std::string>& filenames, int width, int height) {
-    std::vector<thrust::device_vector<float>> images;
-    for (const auto& filename : filenames) {
-        cv::Mat img = cv::imread(imageDirectory + "/" + filename, cv::IMREAD_COLOR);
-        if (img.empty()) {
-            throw std::runtime_error("Could not open or find the image: " + filename);
+ImageLoader::ImageLoader() 
+{
+}
+
+std::map<std::string, std::vector<thrust::device_vector<float>>> ImageLoader::read_all_npz_arrays(const std::string& data_file) {
+    std::map<std::string, std::vector<thrust::device_vector<float>>> all_arrays;
+
+    // Load the NPZ file
+    cnpy::npz_t npz = cnpy::npz_load(data_file);
+
+    for (const auto& kv : npz) {
+        const std::string& array_name = kv.first;
+        cnpy::NpyArray arr = kv.second;
+
+        // Only handle float arrays with 2 dimensions
+        if (arr.word_size != sizeof(float) || arr.shape.size() != 2) {
+            std::cerr << "Skipping array " << array_name << " (not 2D float)" << std::endl;
+            continue;
         }
-        cv::Mat img_resized;
-        cv::resize(img, img_resized, cv::Size(width, height));
-        img_resized.convertTo(img_resized, CV_32F, 1.0 / 255);
 
-        // Flatten to 1D float array
-        std::vector<float> img_flat;
-        img_flat.assign((float*)img_resized.datastart, (float*)img_resized.dataend);
+        float* data = arr.data<float>();
+        size_t num_rows = arr.shape[0];
+        size_t row_size = arr.shape[1];
 
-        thrust::device_vector<float> img_vec(img_flat.begin(), img_flat.end());
-        images.push_back(std::move(img_vec));
+        std::vector<thrust::device_vector<float>> vectors;
+        for (size_t i = 0; i < num_rows; ++i) {
+            thrust::device_vector<float> vec(data + i * row_size, data + (i + 1) * row_size);
+            vectors.push_back(std::move(vec));
+        }
+        all_arrays[array_name] = std::move(vectors);
     }
-    return images;
+    return all_arrays;
 }

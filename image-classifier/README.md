@@ -48,6 +48,12 @@ To run the image classifier, execute the following command from the build direct
 - Classifying new images:
   - Load new images using the `ImageLoader` class and classify them using the `ImageClassifier`.
 
+## image-classifer Python environment
+```
+ conda env create -f environment.yml
+conda activate image-classifier
+```
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.

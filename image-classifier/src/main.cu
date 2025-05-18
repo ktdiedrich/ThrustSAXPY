@@ -2,26 +2,30 @@
 #include "classifier.h"
 #include <iostream>
 #include <vector>
+#include <iomanip>
+
 
 int main(int argc, char** argv) {
-    if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " <image_directory> <img1> <img2> ..." << std::endl;
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <data_file NPZ>" << std::endl;
         return 1;
     }
-    ImageLoader loader(argv[1]);
-    std::vector<std::string> filenames;
-    for (int i = 2; i < argc; ++i) filenames.push_back(argv[i]);
-    auto images = loader.load_images(filenames);
-
-    // Dummy labels for demonstration
-    std::vector<int> labels(images.size(), 0);
-    if (!labels.empty()) labels[0] = 1;
-
-    ImageClassifier clf(images[0].size());
-    clf.train(images, labels, 10, 0.01f);
-
-    auto preds = clf.predict(images);
-    for (size_t i = 0; i < preds.size(); ++i)
-        std::cout << filenames[i] << ": " << preds[i] << std::endl;
+    ImageLoader loader;
+    auto all_arrays = loader.read_all_npz_arrays(argv[1]);
+    
+    for (const auto& pair : all_arrays) {
+        const std::string& array_name = pair.first;
+        const auto& vectors = pair.second;
+        std::cout << "Array: " << array_name << ", rows: " << vectors.size() << std::endl;
+        if (!vectors.empty()) {
+            std::cout << "  First row (first 10 values): ";
+            std::vector<float> host_row(vectors[0].size());
+            thrust::copy(vectors[0].begin(), vectors[0].end(), host_row.begin());
+            for (size_t i = 0; i < std::min<size_t>(10, host_row.size()); ++i) {
+                std::cout << std::setprecision(4) << host_row[i] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }    
     return 0;
 }

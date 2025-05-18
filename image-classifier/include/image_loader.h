@@ -3,13 +3,20 @@
 #include <string>
 #include <vector>
 #include <thrust/device_vector.h>
+#include <map>
 
+/** 
+ * @brief ImageLoader class for loading images from NPZ files.
+*/
 class ImageLoader {
 public:
-    explicit ImageLoader(const std::string& directory);
+    /** @brief Constructor for ImageLoader.
+     */
+    explicit ImageLoader();
 
-    // Loads all images in the directory, resizes and normalizes them
-    std::vector<thrust::device_vector<float>> load_images(const std::vector<std::string>& filenames, int width = 224, int height = 224);
-
-    std::string imageDirectory;
+    /** @brief Load data from compressed files.
+     * @param data_file Path to the NPZ file.
+     * @return A vector of device vectors containing the loaded data.
+     */
+    std::map<std::string, std::vector<thrust::device_vector<float>>> read_all_npz_arrays(const std::string& data_file);
 };

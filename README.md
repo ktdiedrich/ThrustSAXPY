@@ -21,8 +21,6 @@ Linux or WSL on Windows
 
 [Install Windows Susbsytem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) to compile and use GPUs.
 
-Mc OS X not tested.
-
 ## Prerequisites: 
 
 DEB package management
