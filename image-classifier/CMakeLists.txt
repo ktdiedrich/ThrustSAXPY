@@ -23,6 +23,13 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 include(GoogleTest)
 
+FetchContent_Declare(
+  cnpy
+  GIT_REPOSITORY https://github.com/rogersce/cnpy.git
+  GIT_TAG master
+)
+FetchContent_MakeAvailable(cnpy)
+
 include_directories(include)
 include_directories(src)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -39,5 +46,6 @@ set(SOURCES
 )
 
 add_executable(image_classifier ${SOURCES})
+target_include_directories(image_classifier PRIVATE ${cnpy_SOURCE_DIR})
 target_compile_options(image_classifier PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-extended-lambda>)
-target_link_libraries(image_classifier PRIVATE ${OpenCV_LIBS})
+target_link_libraries(image_classifier PRIVATE ${OpenCV_LIBS} cnpy z)

@@ -4,7 +4,7 @@
 
 SAXPY operation: y &lt;-a * x + y x = vector, y = vector, a = scalar constant ; on GPU
 
-@author Karl Diedrich, PhD ktdiedrich@gmail.com
+@author Karl Diedrich, PhD <ktdiedrich@gmail.com>
 
 ### Formula
 
@@ -15,19 +15,23 @@ x = vector, y = vector, a = scalar constant
 
 Based on https://github.com/thrust/thrust/wiki/Quick-Start-Guide
 
+## Environment 
 
-## Compile
-
-### Environment
-
-May need to adjust CUDA_LIB_PATH, default="-L/lib/x86_64-linux-gnu"
-and CUDA_INCLUDE_PATH, default="-I/usr/include" in the build configuration.
-
-### Windows compile
+Linux or WSL on Windows 
 
 [Install Windows Susbsytem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install) to compile and use GPUs.
 
-### Linux compile
+Mc OS X not tested.
+
+## Prerequisites: 
+
+DEB package management
+```
+sudo apt update
+sudo apt install cmake g++ zlib1g-dev gdb cuda-gdb libopencv-dev
+```
+
+## Compile
 
 Install [cmake](https://cmake.org/) build system.
 
@@ -55,14 +59,6 @@ Run executeable in `build/`
 ```
 
 # Debugging
-
-Under DEB package manger Linux or WSL 
-Install debuggers: 
-
-```
-sudo apt update
-sudo apt install gdb cuda-gdb
-```
 
 Configure `cuda-gdb` launchers for VS Code in `.vscode/launch.json`
 
