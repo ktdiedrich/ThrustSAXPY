@@ -26,7 +26,7 @@ Linux or WSL on Windows
 DEB package management
 ```
 sudo apt update
-sudo apt install cmake g++ zlib1g-dev gdb cuda-gdb libopencv-dev
+sudo apt install cmake g++ zlib1g-dev gdb cuda-gdb libopencv-dev python3-pyqt5
 ```
 
 ## Compile

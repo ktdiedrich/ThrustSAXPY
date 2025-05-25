@@ -10,6 +10,8 @@ dependencies:
   - matplotlib
   - pytorch
   - torchvision
+  - pytest
+  - pyqt
   - pip:
       - medmnist
       - opencv-python
