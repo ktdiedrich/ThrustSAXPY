@@ -1,6 +1,5 @@
 import medmnist
 from medmnist import INFO
-from medmnist import ChestMNIST
 import numpy as np
 import pytest
 import matplotlib.pyplot as plt
@@ -76,15 +75,16 @@ def plot_one_image_per_category(images, labels, class_names, save_path="category
     plt.close()
 
 
-# @pytest.mark.parametrize("data_flag, data_class", ["chestmnist", "ChestMNIST"])
-# def test_loading_medmnist(data_flag, data_class):
-def test_loading_medmnist():
+@pytest.mark.parametrize("data_flag, data_class", [("chestmnist", "ChestMNIST")])
+def test_loading_medmnist(data_flag, data_class):
     """
-    Test the medmnist package for the ChestMNIST dataset.
-    This test checks if the dataset can be downloaded and loaded correctly.
+    This plots a histogram of the one-hot encoded labels for the train, val, and test splits.
+
+    It also saves an example image for each category.
+    :param data_flag: The flag for the dataset to be loaded (e.g., "chestmnist").
+    :param data_class: The class name of the dataset in medmnist (e.g., "ChestMNIST").
+    :return: None
     """
-    data_flag = "chestmnist"
-    data_class = "ChestMNIST"
     assert data_flag in INFO, f"INFO dictionary does not contain '{data_flag}' key."
     assert hasattr(medmnist, data_class), f"{data_class} class is not available in medmnist."
     download = True
@@ -147,4 +147,3 @@ def test_loading_npz():
     assert train_labels.shape[1] == 14, "Training labels shape is incorrect."
     assert val_labels.shape[1] == 14, "Validation labels shape is incorrect."
     assert test_labels.shape[1] == 14, "Test labels shape is incorrect."
-    
