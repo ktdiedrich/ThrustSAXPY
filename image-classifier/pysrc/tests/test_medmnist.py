@@ -12,7 +12,7 @@ matplotlib.use("Qt5Agg")
 
 
 
-def plot_onehot_label_histograms(train_labels, val_labels, test_labels, class_names=None, save_path="onehot_label_histograms.png"):
+def plot_onehot_label_histograms(train_labels, val_labels, test_labels, save_path, class_names=None):
     """
     Plot histograms of class indices for one-hot encoded train, val, and test labels.
     """
@@ -38,7 +38,7 @@ def plot_onehot_label_histograms(train_labels, val_labels, test_labels, class_na
     plt.savefig(save_path)
 
 
-def plot_one_image_per_category(images, labels, class_names, save_path="category_examples.png", nrows=3):
+def plot_one_image_per_category(images, labels, class_names, save_path, nrows=3):
     """
     Plot one example image for each category, labeled with class_names.
     images: numpy array of shape (N, 1, H, W) or (N, H, W)
@@ -100,27 +100,36 @@ def test_loading_medmnist(data_flag, data_class):
     test_dataset = DataClass(split="test", download=download)
 
     plot_onehot_label_histograms(
-        train_dataset.labels, 
-        val_dataset.labels, 
-        test_dataset.labels,
+        train_labels=train_dataset.labels, 
+        val_labels=val_dataset.labels, 
+        test_labels=test_dataset.labels,
+        save_path="onehot_label_histograms_from_py.png",
         class_names=class_names
     )
     plot_one_image_per_category(
-        train_dataset.imgs, 
-        train_dataset.labels, 
+        images=train_dataset.imgs, 
+        labels=train_dataset.labels, 
         class_names=class_names,
-        save_path="category_examples_train.png",
+        save_path="category_examples_train_from_py.png",
         nrows=3
     )
 
 
-def test_loading_npz():
+@pytest.mark.parametrize("dir_path, data_flag", [("/home/ktdiedrich/data/medMNIST", "chestmnist")])
+def test_loading_npz(dir_path: str, data_flag: str):
     """
-    Test the loading of NPZ files for the ChestMNIST dataset.
-    This test checks if the NPZ files can be loaded correctly.
+    Test the loading of NPZ files for the MedMNIST datasets.
+    
+    This function checks if the NPZ file can be loaded correctly and verifies the shapes of the data arrays.
+    It also plots histograms of one-hot encoded labels and saves example images for each category.
+    :param dir_path: The directory path where the NPZ file is located.
+    :param data_flag: The flag for the dataset to be loaded (e.g., "chestmnist").
+    :return: None
     """
-    dir_path: str = "/home/ktdiedrich/data/medMNIST"
-    data_flag: str = "chestmnist"
+    info = INFO[data_flag]
+    labels  = info['label']
+    class_names = list(labels.values())
+
     ending: str = "npz"
     npz_path: Path  = Path(dir_path, f"{data_flag}.{ending}")
     data = np.load(npz_path)
@@ -132,6 +141,21 @@ def test_loading_npz():
     val_labels = data["val_labels"]
     test_labels = data["test_labels"]
 
+    plot_onehot_label_histograms(
+        train_labels=train_labels, 
+        val_labels=val_labels, 
+        test_labels=test_labels,
+        save_path="onehot_label_histograms_from_npz.png",
+        class_names=class_names
+    )
+
+    plot_one_image_per_category(
+        images=train_images, 
+        labels=train_labels, 
+        class_names=class_names,
+        save_path="category_examples_train_from_npz.png",
+        nrows=3
+    )
     assert train_images is not None, "Failed to load training data from NPZ file."
     assert val_images is not None, "Failed to load validation data from NPZ file."
     assert test_images is not None, "Failed to load test data from NPZ file."
