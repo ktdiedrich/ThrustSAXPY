@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <thrust/device_vector.h>
+#include <cnpy.h>
 #include <map>
 
 /** 
@@ -18,5 +18,5 @@ public:
      * @param data_file Path to the NPZ file.
      * @return A vector of device vectors containing the loaded data.
      */
-    std::map<std::string, std::vector<thrust::device_vector<float>>> read_all_npz_arrays(const std::string& data_file);
+    std::map<std::string, cnpy::NpyArray> read_all_npz_arrays(const std::string& data_file);
 };

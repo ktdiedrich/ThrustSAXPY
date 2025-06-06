@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <cnpy.h>
 
 
 int main(int argc, char** argv) {
@@ -11,21 +12,23 @@ int main(int argc, char** argv) {
         return 1;
     }
     ImageLoader loader;
-    auto all_arrays = loader.read_all_npz_arrays(argv[1]);
+    std::map<std::string, cnpy::NpyArray> all_arrays = loader.read_all_npz_arrays(argv[1]);
     
     for (const auto& pair : all_arrays) {
         const std::string& array_name = pair.first;
-        const auto& vectors = pair.second;
-        std::cout << "Array: " << array_name << ", rows: " << vectors.size() << std::endl;
-        if (!vectors.empty()) {
-            std::cout << "  First row (first 10 values): ";
-            std::vector<float> host_row(vectors[0].size());
-            thrust::copy(vectors[0].begin(), vectors[0].end(), host_row.begin());
-            for (size_t i = 0; i < std::min<size_t>(10, host_row.size()); ++i) {
-                std::cout << std::setprecision(4) << host_row[i] << " ";
-            }
-            std::cout << std::endl;
+        const cnpy::NpyArray& array = pair.second;
+        std::cout << "Array name=" << array_name << " dimensions=" << array.shape.size() << " n samples=" <<
+                    array.shape[0];
+        if (array.shape.size() >= 2) {
+            std::cout << " rows=" << array.shape[1];
         }
+        if (array.shape.size() >= 3) {
+            std::cout << " cols=" << array.shape[2];
+        }
+        if (array.shape.size() >= 4) {
+            std::cout << " channels=" << array.shape[3];
+        }
+        std::cout << std::endl;
     }    
     return 0;
 }
