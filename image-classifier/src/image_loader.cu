@@ -8,11 +8,7 @@
 #include <iostream>
 
 
-ImageLoader::ImageLoader() 
-{
-}
-
-std::map<std::string, cnpy::NpyArray> ImageLoader::read_all_npz_arrays(
+std::map<std::string, cnpy::NpyArray> read_all_npz_arrays(
     const std::string& data_file) {
     std::map<std::string, cnpy::NpyArray> all_arrays;
     cnpy::npz_t npz = cnpy::npz_load(data_file);
@@ -24,3 +20,4 @@ std::map<std::string, cnpy::NpyArray> ImageLoader::read_all_npz_arrays(
     }
     return all_arrays;
 }
+
