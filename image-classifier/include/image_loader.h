@@ -87,3 +87,20 @@ void write_image(const std::string& array_name,
     }
     std::cout << " Wrote: " << filename;
 }
+
+
+/** Calculate the histogram of one-hot encoded vectors in vec2d.
+ * Each row in vec2d is a one-hot vector; the histogram counts the index of the 'hot' (nonzero) entry. */ 
+template<typename T>
+std::map<size_t, size_t> one_hot_histogram(const std::vector<std::vector<T>>& vec2d)
+{
+    std::map<size_t, size_t> histogram;
+    for (const auto& row : vec2d) {
+        auto it = std::find_if(row.begin(), row.end(), [](T v) { return v != T(0); });
+        if (it != row.end()) {
+            size_t idx = std::distance(row.begin(), it);
+            ++histogram[idx];
+        }
+    }
+    return histogram;
+}

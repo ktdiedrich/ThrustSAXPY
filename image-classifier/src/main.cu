@@ -40,6 +40,12 @@ int main(int argc, char** argv) {
                 for (size_t j = 0; j < vec2d[0].size(); ++j) {
                     std::cout << static_cast<int>(vec2d[0][j]) << " ";
                 }
+                auto label_histogram = one_hot_histogram<uint8_t>(vec2d);
+                std::cout << "\n\tOne-hot histogram (index: count): ";
+                for (const auto& kv : label_histogram) {
+                    std::cout << kv.first << ": " << kv.second << " | ";
+                }
+                std::cout << std::endl;
             } else {
                 std::cout << " No 2D data available.";  
             }
