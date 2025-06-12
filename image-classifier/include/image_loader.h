@@ -133,6 +133,23 @@ void print_one_hot_histogram_with_labels(
     std::cout << std::endl;
 }
 
+/** 
+ * Extract the base filename without directory path and extension.
+ * For example, given "path/to/file.png", it returns "file".
+ */
+inline std::string get_base_filename(const std::string filename) {
+    std::string base_title = filename;
+    // Remove directory path
+    size_t last_slash = filename.find_last_of("/\\");
+    if (last_slash != std::string::npos)
+        base_title = base_title.substr(last_slash + 1);
+    // Remove extension (e.g., ".png")
+    size_t last_dot = base_title.find_last_of('.');
+    if (last_dot != std::string::npos)
+        base_title = base_title.substr(0, last_dot);
+    return base_title;
+}
+
 
 /** Plot a histogram (bar chart) and write it to an image file using OpenCV.
  *  hist: map from label index to count
@@ -143,7 +160,7 @@ inline void plot_histogram_to_image(
     const std::map<size_t, size_t>& hist,
     const std::map<size_t, std::string>& labels,
     const std::string& filename,
-    int width = 640, int height = 480)
+    int width = 1400, int height = 480)
 {
     // Find max count for scaling
     size_t max_count = 1;
@@ -152,6 +169,10 @@ inline void plot_histogram_to_image(
     int margin = 40;
     int bar_width = (width - 2 * margin) / std::max<size_t>(1, hist.size());
     cv::Mat img(height, width, CV_8UC3, cv::Scalar(255,255,255));
+
+    // Draw title (base filename without extension)
+    std::string base_title = get_base_filename(filename);
+    cv::putText(img, base_title, cv::Point(margin, margin - 10), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(10,10,10), 2);
 
     int i = 0;
     for (const auto& kv : hist) {
