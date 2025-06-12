@@ -22,55 +22,36 @@ const std::map<size_t, std::string> CHEST_LABELS = {
  */
 std::map<std::string, cnpy::NpyArray> read_all_npz_arrays(const std::string& data_file);
 
-template<typename DataType>
-void load_array_to_vectors(const cnpy::NpyArray& array,
-    std::vector<std::vector<DataType>>& vec2d,
-    std::vector<std::vector<std::vector<DataType>>>& vec3d)
+// 2D version
+template<typename T>
+inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<std::vector<T>>& vec2d)
 {
-    const uint8_t* data = array.data<DataType>();
-    if (!data) {
-        throw std::runtime_error("Array data is null.");
-    }
-    if (array.shape.size() == 2) {
-        size_t rows = array.shape[0];
-        size_t cols = array.shape[1];
-        size_t total = rows * cols;
-        
-        if (array.num_vals != total) {
-            throw std::runtime_error("Array size mismatch: expected " +
-                std::to_string(total) + ", got " + std::to_string(array.num_vals));
-        }
-        vec2d.resize(rows, std::vector<DataType>(cols));
+    if (array.shape.size() != 2)
+        throw std::runtime_error("Array is not 2D");
+    size_t rows = array.shape[0];
+    size_t cols = array.shape[1];
+    const T* data = array.data<T>();
+    vec2d.resize(rows, std::vector<T>(cols));
+    for (size_t i = 0; i < rows; ++i)
+        for (size_t j = 0; j < cols; ++j)
+            vec2d[i][j] = data[i * cols + j];
+}
+
+// 3D version
+template<typename T>
+inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<std::vector<std::vector<T>>>& vec3d)
+{
+    if (array.shape.size() != 3)
+        throw std::runtime_error("Array is not 3D");
+    size_t slices = array.shape[0];
+    size_t rows = array.shape[1];
+    size_t cols = array.shape[2];
+    const T* data = array.data<T>();
+    vec3d.resize(slices, std::vector<std::vector<T>>(rows, std::vector<T>(cols)));
+    for (size_t s = 0; s < slices; ++s)
         for (size_t i = 0; i < rows; ++i)
             for (size_t j = 0; j < cols; ++j)
-                try {
-                    vec2d[i][j] = data[i * cols + j];
-                } catch (const std::exception& e) {
-                    throw std::runtime_error("Error accessing 2D array data: " + std::string(e.what()));
-                }
-        return;
-    } else if (array.shape.size() == 3) {
-        size_t slices = array.shape[0];
-        size_t rows = array.shape[1];
-        size_t cols = array.shape[2];
-        size_t total = slices * rows * cols;
-        
-        if (array.num_vals != total) {
-            throw std::runtime_error("Array size mismatch: expected " +
-                std::to_string(total) + ", got " + std::to_string(array.num_vals));
-        }
-        vec3d.resize(slices, std::vector<std::vector<DataType>>(rows, std::vector<DataType>(cols)));
-        for (size_t s = 0; s < slices; ++s)
-            for (size_t i = 0; i < rows; ++i)
-                for (size_t j = 0; j < cols; ++j)
-                    try {
-                        vec3d[s][i][j] = data[s * rows * cols + i * cols + j];
-                    } catch (const std::exception& e) {
-                        throw std::runtime_error("Error accessing 3D array data: " + std::string(e.what()));
-                    }
-    } else {
-        throw std::runtime_error("Only 3D arrays are supported.");
-    }
+                vec3d[s][i][j] = data[s * rows * cols + i * cols + j];
 }
 
 
