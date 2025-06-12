@@ -47,6 +47,7 @@ int main(int argc, char** argv) {
                 }
                 std::cout << std::endl;
                 print_one_hot_histogram_with_labels<uint8_t>(vec2d, CHEST_LABELS);
+                plot_histogram_to_image(label_histogram, CHEST_LABELS, array_name + "_hist.png");
             } else {
                 std::cout << " No 2D data available.";  
             }

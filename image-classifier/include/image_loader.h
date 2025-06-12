@@ -5,6 +5,8 @@
 #include <cnpy.h>
 #include <map>
 #include <opencv2/opencv.hpp>
+#include <algorithm>
+#include <iostream>
 
 
 const std::map<size_t, std::string> CHEST_LABELS = {
@@ -129,4 +131,51 @@ void print_one_hot_histogram_with_labels(
         }
     }
     std::cout << std::endl;
+}
+
+
+/** Plot a histogram (bar chart) and write it to an image file using OpenCV.
+ *  hist: map from label index to count
+ *  labels: map from label index to label string
+ *  filename: output image file name (e.g., "hist.png")
+ */
+inline void plot_histogram_to_image(
+    const std::map<size_t, size_t>& hist,
+    const std::map<size_t, std::string>& labels,
+    const std::string& filename,
+    int width = 640, int height = 480)
+{
+    // Find max count for scaling
+    size_t max_count = 1;
+    for (const auto& kv : hist) max_count = std::max(max_count, kv.second);
+
+    int margin = 40;
+    int bar_width = (width - 2 * margin) / std::max<size_t>(1, hist.size());
+    cv::Mat img(height, width, CV_8UC3, cv::Scalar(255,255,255));
+
+    int i = 0;
+    for (const auto& kv : hist) {
+        int x1 = margin + i * bar_width;
+        int x2 = x1 + bar_width - 4;
+        int y2 = height - margin;
+        int y1 = y2 - static_cast<int>((double(kv.second) / max_count) * (height - 2 * margin));
+        cv::rectangle(img, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(100, 100, 240), cv::FILLED);
+
+        // Draw label
+        std::string label = std::to_string(kv.first);
+        auto it = labels.find(kv.first);
+        if (it != labels.end()) label = it->second;
+        cv::putText(img, label, cv::Point(x1, height - margin + 18), cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(0,0,0), 1);
+
+        // Draw count
+        cv::putText(img, std::to_string(kv.second), cv::Point(x1, y1 - 6), cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(0,0,0), 1);
+
+        ++i;
+    }
+    // Draw axes
+    cv::line(img, cv::Point(margin, margin), cv::Point(margin, height - margin), cv::Scalar(0,0,0), 1);
+    cv::line(img, cv::Point(margin, height - margin), cv::Point(width - margin, height - margin), cv::Scalar(0,0,0), 1);
+
+    cv::imwrite(filename, img);
+    std::cout << "Histogram image written to: " << filename << std::endl;
 }
