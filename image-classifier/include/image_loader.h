@@ -141,6 +141,15 @@ inline void load_array_to_vectors_3d(const cnpy::NpyArray& array, std::vector<th
 }
 
 
+/**
+ * Write a 2D vector to an image file using OpenCV.
+ * The vector is assumed to represent a grayscale image.
+ * @param array_name Base name for the output file (without extension).
+ * @param vec2d 2D vector containing pixel values.
+ * @param slice_numer Slice number to append to the filename.
+ * @param cv_type OpenCV type for the image (default is CV_8UC1).
+ * @param encoding Image format (e.g., "png", "jpg").
+ */
 template<typename DataType>
 void write_image(const std::string& array_name,
                  const std::vector<std::vector<DataType>>& vec2d, const int slice_numer,
@@ -166,7 +175,10 @@ void write_image(const std::string& array_name,
 
 
 /** Calculate the histogram of one-hot encoded vectors in vec2d.
- * Each row in vec2d is a one-hot vector; the histogram counts the index of the 'hot' (nonzero) entry. */ 
+ * Each row in vec2d is a one-hot vector; the histogram counts the index of the 'hot' (nonzero) entry. 
+ * @param vec2d 2D vector where each row is a one-hot encoded vector.
+ * @return A map where keys are indices of the 'hot' entries and values are their counts.
+ * */ 
 template<typename T>
 std::map<size_t, size_t> one_hot_histogram(const std::vector<std::vector<T>>& vec2d)
 {
@@ -182,6 +194,11 @@ std::map<size_t, size_t> one_hot_histogram(const std::vector<std::vector<T>>& ve
 }
 
 
+/** Print a one-hot histogram to the console.
+ * Each row in vec2d is a one-hot encoded vector; the histogram counts the index of the 'hot' (nonzero) entry.
+ * @param vec2d 2D vector where each row is a one-hot encoded vector.
+ * @param labels Optional map from indices to label strings for better readability.
+ */
 template<typename T>
 void print_one_hot_histogram_with_labels(
     const std::vector<std::vector<T>>& vec2d,
@@ -203,14 +220,18 @@ void print_one_hot_histogram_with_labels(
 /** 
  * Extract the base filename without directory path and extension.
  * For example, given "path/to/file.png", it returns "file".
+ * @param filename Full path to the file.
+ * @return Base filename without path and extension.
  */
 std::string get_base_filename(const std::string filename);
 
 
 /** Plot a histogram (bar chart) and write it to an image file using OpenCV.
- *  hist: map from label index to count
- *  labels: map from label index to label string
- *  filename: output image file name (e.g., "hist.png")
+ * @param hist Map from label index to count.
+ * @param labels Map from label index to label string for better readability.
+ * @param filename Output image file name (e.g., "hist.png").
+ * @param width Width of the output image (default is 1400).
+ * @param height Height of the output image (default is 480).
  */
 void plot_histogram_to_image(
     const std::map<size_t, size_t>& hist,
