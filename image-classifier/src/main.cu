@@ -4,6 +4,7 @@
 #include <vector>
 #include <iomanip>
 #include <cnpy.h>
+#include <opencv2/opencv.hpp>
 
 
 int main(int argc, char** argv) {
@@ -36,8 +37,11 @@ int main(int argc, char** argv) {
             // Example: print first value if available
             if (!vec2d.empty() && !vec2d[0].empty()) 
                 std::cout << " First 2D value=" << static_cast<int>(vec2d[0][0]);
-            if (!vec3d.empty() && !vec3d[0].empty() && !vec3d[0][0].empty()) 
+            if (!vec3d.empty() && !vec3d[0].empty() && !vec3d[0][0].empty()) {
                 std::cout << " First 3D value=" << static_cast<int>(vec3d[0][0][0]);
+                const int slice_number = 0;
+                write_image<uint8_t>(array_name, vec3d[slice_number], slice_number, CV_8UC1, "png");
+            }
         } catch (const std::exception& ex) {
             std::cerr << "Error loading array: " << ex.what() << std::endl;
         }

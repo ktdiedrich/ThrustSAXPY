@@ -4,6 +4,7 @@
 #include <vector>
 #include <cnpy.h>
 #include <map>
+#include <opencv2/opencv.hpp>
 
 
 /** @brief Load data from compressed files.
@@ -63,3 +64,26 @@ void load_array_to_vectors(const cnpy::NpyArray& array,
     }
 }
 
+
+template<typename DataType>
+void write_image(const std::string& array_name,
+                 const std::vector<std::vector<DataType>>& vec2d, const int slice_numer,
+                 const int cv_type = CV_8UC1,
+                 const std::string encoding = "png") {
+    // TODO: CV_8UC1 is  macro for 8-bit single channel image
+    cv::Mat img(vec2d.size(), vec2d[0].size(), cv_type);
+    for (size_t i = 0; i < vec2d.size(); ++i)
+        for (size_t j = 0; j < vec2d[0].size(); ++j)
+            img.at<DataType>(i, j) = vec2d[i][j];
+    std::string filename = array_name + "_slice" + std::to_string(slice_numer) + "." + encoding;
+    if (encoding == "jpg" || encoding == "jpeg") {
+        std::vector<int> params = { cv::IMWRITE_JPEG_QUALITY, 95 };
+        cv::imwrite(filename, img, params);
+    } else if (encoding == "png") {
+        std::vector<int> params = { cv::IMWRITE_PNG_COMPRESSION, 9 };
+        cv::imwrite(filename, img, params);
+    } else {
+        throw std::runtime_error("Unsupported image encoding: " + encoding);
+    }
+    std::cout << " Wrote: " << filename;
+}
