@@ -35,8 +35,14 @@ int main(int argc, char** argv) {
         try {
             load_array_to_vectors<uint8_t>(array, vec2d, vec3d);
             // Example: print first value if available
-            if (!vec2d.empty() && !vec2d[0].empty()) 
-                std::cout << " First 2D value=" << static_cast<int>(vec2d[0][0]);
+            if (!vec2d.empty() && !vec2d[0].empty()) { 
+                std::cout << " Label vec2d[0]=";
+                for (size_t j = 0; j < vec2d[0].size(); ++j) {
+                    std::cout << static_cast<int>(vec2d[0][j]) << " ";
+                }
+            } else {
+                std::cout << " No 2D data available.";  
+            }
             if (!vec3d.empty() && !vec3d[0].empty() && !vec3d[0][0].empty()) {
                 std::cout << " First 3D value=" << static_cast<int>(vec3d[0][0][0]);
                 const int slice_number = 0;
