@@ -10,7 +10,13 @@
 #include <thrust/device_vector.h>
 #include <thrust/host_vector.h>
 
-
+/**
+ * @brief Labels for chest X-ray diseases.
+ * These labels correspond to the indices in the one-hot encoded vectors.
+ * They are used to interpret the results of the model.
+ * The indices match the order in which the diseases are represented in the dataset.
+ * For example, if the model predicts a vector with a '1' at index 2, it indicates the presence of "effusion".  
+ */
 const std::map<size_t, std::string> CHEST_LABELS = {
     {0, "atelectasis"}, {1, "cardiomegaly"}, {2, "effusion"}, {3, "infiltration"}, {4, "mass"}, {5, "nodule"},
     {6, "pneumonia"}, {7, "pneumothorax"}, {8, "consolidation"}, {9, "edema"}, {10, "emphysema"},
