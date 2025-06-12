@@ -22,12 +22,12 @@ const std::map<size_t, std::string> CHEST_LABELS = {
  */
 std::map<std::string, cnpy::NpyArray> read_all_npz_arrays(const std::string& data_file);
 
-template<typename T>
+template<typename DataType>
 void load_array_to_vectors(const cnpy::NpyArray& array,
-    std::vector<std::vector<T>>& vec2d,
-    std::vector<std::vector<std::vector<T>>>& vec3d)
+    std::vector<std::vector<DataType>>& vec2d,
+    std::vector<std::vector<std::vector<DataType>>>& vec3d)
 {
-    const uint8_t* data = array.data<T>();
+    const uint8_t* data = array.data<DataType>();
     if (!data) {
         throw std::runtime_error("Array data is null.");
     }
@@ -40,7 +40,7 @@ void load_array_to_vectors(const cnpy::NpyArray& array,
             throw std::runtime_error("Array size mismatch: expected " +
                 std::to_string(total) + ", got " + std::to_string(array.num_vals));
         }
-        vec2d.resize(rows, std::vector<T>(cols));
+        vec2d.resize(rows, std::vector<DataType>(cols));
         for (size_t i = 0; i < rows; ++i)
             for (size_t j = 0; j < cols; ++j)
                 try {
@@ -59,7 +59,7 @@ void load_array_to_vectors(const cnpy::NpyArray& array,
             throw std::runtime_error("Array size mismatch: expected " +
                 std::to_string(total) + ", got " + std::to_string(array.num_vals));
         }
-        vec3d.resize(slices, std::vector<std::vector<T>>(rows, std::vector<T>(cols)));
+        vec3d.resize(slices, std::vector<std::vector<DataType>>(rows, std::vector<DataType>(cols)));
         for (size_t s = 0; s < slices; ++s)
             for (size_t i = 0; i < rows; ++i)
                 for (size_t j = 0; j < cols; ++j)
