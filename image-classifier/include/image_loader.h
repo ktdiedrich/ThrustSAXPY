@@ -22,24 +22,39 @@ const std::map<size_t, std::string> CHEST_LABELS = {
  */
 std::map<std::string, cnpy::NpyArray> read_all_npz_arrays(const std::string& data_file);
 
-// 2D version
-template<typename T>
-inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<std::vector<T>>& vec2d)
+// 2D version: generic container type (default is std::vector)
+template<
+    typename T,
+    template <typename, typename> class Container = std::vector,
+    typename AllocOuter = std::allocator<Container<T, std::allocator<T>>>,
+    typename AllocInner = std::allocator<T>
+>
+inline void load_array_to_vectors(
+    const cnpy::NpyArray& array,
+    Container<Container<T, AllocInner>, AllocOuter>& vec2d)
 {
     if (array.shape.size() != 2)
         throw std::runtime_error("Array is not 2D");
     size_t rows = array.shape[0];
     size_t cols = array.shape[1];
     const T* data = array.data<T>();
-    vec2d.resize(rows, std::vector<T>(cols));
+    vec2d.resize(rows, Container<T, AllocInner>(cols));
     for (size_t i = 0; i < rows; ++i)
         for (size_t j = 0; j < cols; ++j)
             vec2d[i][j] = data[i * cols + j];
 }
 
-// 3D version
-template<typename T>
-inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<std::vector<std::vector<T>>>& vec3d)
+// 3D version: generic container type (default is std::vector)
+template<
+    typename T,
+    template <typename, typename> class Container = std::vector,
+    typename AllocOuter = std::allocator<Container<Container<T, std::allocator<T>>, std::allocator<Container<T, std::allocator<T>>>>>,
+    typename AllocMid = std::allocator<Container<T, std::allocator<T>>>,
+    typename AllocInner = std::allocator<T>
+>
+inline void load_array_to_vectors(
+    const cnpy::NpyArray& array,
+    Container<Container<Container<T, AllocInner>, AllocMid>, AllocOuter>& vec3d)
 {
     if (array.shape.size() != 3)
         throw std::runtime_error("Array is not 3D");
@@ -47,7 +62,7 @@ inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<std::
     size_t rows = array.shape[1];
     size_t cols = array.shape[2];
     const T* data = array.data<T>();
-    vec3d.resize(slices, std::vector<std::vector<T>>(rows, std::vector<T>(cols)));
+    vec3d.resize(slices, Container<Container<T, AllocInner>, AllocMid>(rows, Container<T, AllocInner>(cols)));
     for (size_t s = 0; s < slices; ++s)
         for (size_t i = 0; i < rows; ++i)
             for (size_t j = 0; j < cols; ++j)
