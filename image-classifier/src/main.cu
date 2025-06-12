@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <cnpy.h>
 #include <opencv2/opencv.hpp>
+#include <thrust/device_vector.h>
 
 
 int main(int argc, char** argv) {
@@ -33,8 +34,10 @@ int main(int argc, char** argv) {
         if (array.shape.size() == 2) {
             // 2D array, likely labels
             std::vector<std::vector<uint8_t>> one_hot_labels2d;
+            std::vector<thrust::device_vector<uint8_t>> dvec_one_hot2d;
             try {
                 load_array_to_vectors<uint8_t>(array, one_hot_labels2d);
+                load_array_to_vectors<uint8_t>(array, dvec_one_hot2d);
             } catch (const std::exception& ex) {
                 std::cerr << "Error loading 2D array: " << ex.what() << std::endl;
                 continue; // Skip to next array

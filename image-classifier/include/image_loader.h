@@ -7,6 +7,8 @@
 #include <opencv2/opencv.hpp>
 #include <algorithm>
 #include <iostream>
+#include <thrust/device_vector.h>
+#include <thrust/host_vector.h>
 
 
 const std::map<size_t, std::string> CHEST_LABELS = {
@@ -69,6 +71,19 @@ inline void load_array_to_vectors(
                 vec3d[s][i][j] = data[s * rows * cols + i * cols + j];
 }
 
+
+template<typename T>
+inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<thrust::device_vector<T>>& vec2d)
+{
+    if (array.shape.size() != 2)
+        throw std::runtime_error("Array is not 2D");
+    size_t rows = array.shape[0];
+    size_t cols = array.shape[1];
+    const T* data = array.data<T>();
+    vec2d.resize(rows);
+    for (size_t i = 0; i < rows; ++i)
+        vec2d[i] = thrust::device_vector<T>(data + i * cols, data + (i + 1) * cols);
+}
 
 template<typename DataType>
 void write_image(const std::string& array_name,
