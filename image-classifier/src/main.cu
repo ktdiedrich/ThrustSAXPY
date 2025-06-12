@@ -41,11 +41,12 @@ int main(int argc, char** argv) {
                     std::cout << static_cast<int>(vec2d[0][j]) << " ";
                 }
                 auto label_histogram = one_hot_histogram<uint8_t>(vec2d);
-                std::cout << "\n\tOne-hot histogram (index: count): ";
+                std::cout << "\n1-hot hist: ";
                 for (const auto& kv : label_histogram) {
-                    std::cout << kv.first << ": " << kv.second << " | ";
+                    std::cout << kv.first << ":" << kv.second << " | ";
                 }
                 std::cout << std::endl;
+                print_one_hot_histogram_with_labels<uint8_t>(vec2d, CHEST_LABELS);
             } else {
                 std::cout << " No 2D data available.";  
             }

@@ -7,6 +7,13 @@
 #include <opencv2/opencv.hpp>
 
 
+const std::map<size_t, std::string> CHEST_LABELS = {
+    {0, "atelectasis"}, {1, "cardiomegaly"}, {2, "effusion"}, {3, "infiltration"}, {4, "mass"}, {5, "nodule"},
+    {6, "pneumonia"}, {7, "pneumothorax"}, {8, "consolidation"}, {9, "edema"}, {10, "emphysema"},
+    {11, "fibrosis"}, {12, "pleural"}, {13, "hernia"}
+};
+
+
 /** @brief Load data from compressed files.
  * @param data_file Path to the NPZ file.
  * @return A vector of device vectors containing the loaded data.
@@ -103,4 +110,23 @@ std::map<size_t, size_t> one_hot_histogram(const std::vector<std::vector<T>>& ve
         }
     }
     return histogram;
+}
+
+
+template<typename T>
+void print_one_hot_histogram_with_labels(
+    const std::vector<std::vector<T>>& vec2d,
+    const std::map<size_t, std::string>& labels)
+{
+    auto histogram = one_hot_histogram(vec2d);
+    std::cout << "1-hot hist: ";
+    for (const auto& kv : histogram) {
+        auto it = labels.find(kv.first);
+        if (it != labels.end()) {
+            std::cout << it->second << ":" << kv.second << " | ";
+        } else {
+            std::cout << kv.first << ":" << kv.second << " | ";
+        }
+    }
+    std::cout << std::endl;
 }
