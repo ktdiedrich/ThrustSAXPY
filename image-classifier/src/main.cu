@@ -54,9 +54,11 @@ int main(int argc, char** argv) {
         } else if (array.shape.size() == 3) {
             // 3D array, likely images
             std::vector<std::vector<std::vector<uint8_t>>> list_image;
+            std::vector<thrust::device_vector<uint8_t>> dvec_image;
             std::cout << " Loading 3D image data.";
             try {
                 load_array_to_vectors<uint8_t>(array, list_image);
+                load_array_to_vectors_3d<uint8_t>(array, dvec_image);
             } catch (const std::exception& ex) {
                 std::cerr << "Error loading 3D array: " << ex.what() << std::endl;
                 continue; // Skip to next array

@@ -24,7 +24,18 @@ const std::map<size_t, std::string> CHEST_LABELS = {
  */
 std::map<std::string, cnpy::NpyArray> read_all_npz_arrays(const std::string& data_file);
 
-// 2D version: generic container type (default is std::vector)
+
+/**
+ * Load a 2D array from a NPY file into a vector of vectors.
+ * Each row of the array becomes a separate vector.
+ * @param array The NPY array to load.
+ * @param vec2d The output vector of vectors.
+ * @tparam T The data type of the array elements (e.g., float, int).
+ * @tparam Container The container type to use for the 2D vectors (default is std::vector).
+ * @tparam AllocOuter The allocator type for the outer container (default is std::allocator).
+ * @tparam AllocInner The allocator type for the inner container (default is std::allocator).
+ * @throws std::runtime_error if the array is not 2D.
+ */
 template<
     typename T,
     template <typename, typename> class Container = std::vector,
@@ -46,7 +57,19 @@ inline void load_array_to_vectors(
             vec2d[i][j] = data[i * cols + j];
 }
 
-// 3D version: generic container type (default is std::vector)
+
+/**
+ * Load a 3D array from a NPY file into a vector of vectors.
+ * Each slice of the array becomes a separate vector, with each row being a vector.
+ * @param array The NPY array to load.
+ * @param vec3d The output vector of vectors.
+ * @tparam T The data type of the array elements (e.g., float, int).
+ * @tparam Container The container type to use for the 2D vectors (default is std::vector).
+ * @tparam AllocOuter The allocator type for the outer container (default is std::allocator).
+ * @tparam AllocMid The allocator type for the middle container (default is std::allocator).
+ * @tparam AllocInner The allocator type for the inner container (default is std::allocator).
+ * @throws std::runtime_error if the array is not 3D.
+ */
 template<
     typename T,
     template <typename, typename> class Container = std::vector,
@@ -72,6 +95,14 @@ inline void load_array_to_vectors(
 }
 
 
+/**
+ * Load a 2D array from a NPY file into a vector of device vectors.
+ * Each row of the array becomes a separate device vector.
+ * @param array The NPY array to load.
+ * @param vec2d The output vector of device vectors.
+ * @tparam T The data type of the array elements (e.g., float, int).
+ * @throws std::runtime_error if the array is not 2D.   
+ */
 template<typename T>
 inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<thrust::device_vector<T>>& vec2d)
 {
@@ -84,6 +115,31 @@ inline void load_array_to_vectors(const cnpy::NpyArray& array, std::vector<thrus
     for (size_t i = 0; i < rows; ++i)
         vec2d[i] = thrust::device_vector<T>(data + i * cols, data + (i + 1) * cols);
 }
+
+
+/**
+ * Load a 3D array from a NPY file into a vector of device vectors.
+ * Each slice of the array becomes a separate device vector, flattened to 1D.
+ * @param array The NPY array to load.
+ * @param vec3d The output vector of device vectors.
+ * @tparam T The data type of the array elements (e.g., float, int).
+ * @throws std::runtime_error if the array is not 3D.
+ */
+template<typename T>
+inline void load_array_to_vectors_3d(const cnpy::NpyArray& array, std::vector<thrust::device_vector<T>>& vec3d)
+{
+    if (array.shape.size() != 3)
+        throw std::runtime_error("Array is not 3D");
+    size_t slices = array.shape[0];
+    size_t rows = array.shape[1];
+    size_t cols = array.shape[2];
+    const T* data = array.data<T>();
+    vec3d.resize(slices);
+    for (size_t s = 0; s < slices; ++s)
+        vec3d[s] = thrust::device_vector<T>(data + s * rows * cols, data + (s + 1) * rows * cols);
+    // Each vec3d[s] is a flattened (rows*cols) device vector for slice s
+}
+
 
 template<typename DataType>
 void write_image(const std::string& array_name,
