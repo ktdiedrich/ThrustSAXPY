@@ -13,7 +13,15 @@
 
 
 typedef uint8_t data_type_t;
+typedef std::vector<std::vector<data_type_t>> Vector2D;
+typedef std::vector<std::vector<std::vector<data_type_t>>> Vector3D;
 
+/** A standard vector of device vectors on the GPU. */
+typedef std::vector<thrust::device_vector<data_type_t>> DeviceVector2D;
+
+/** A standard vector of device vectors on the GPU.  
+ * 3D is the same as 2D. Pack rows and columns on 1D device vector. */
+typedef std::vector<thrust::device_vector<data_type_t>> DeviceVector3D;
 
 /**
  * @brief Labels for chest X-ray diseases.
@@ -258,8 +266,8 @@ void plot_histogram_to_image(
  * @return A vector of maps, each containing the data from one NPY array.
  */
 std::tuple<
-    std::map<std::string, std::vector<std::vector<data_type_t>>>,
-    std::map<std::string, std::vector<std::vector<std::vector<data_type_t>>>>,
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>>,
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>>>
- get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays);
+    std::map<std::string, Vector2D>,
+    std::map<std::string, Vector3D>,
+    std::map<std::string, DeviceVector2D>,
+    std::map<std::string, DeviceVector3D>> 
+    get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays);

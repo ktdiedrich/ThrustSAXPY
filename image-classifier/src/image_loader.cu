@@ -82,16 +82,16 @@ void plot_histogram_to_image(
 
 
 std::tuple<
-    std::map<std::string, std::vector<std::vector<data_type_t>>>,
-    std::map<std::string, std::vector<std::vector<std::vector<data_type_t>>>>,
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>>,
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>>>
+    std::map<std::string, Vector2D>,
+    std::map<std::string, Vector3D>,
+    std::map<std::string, DeviceVector2D>,
+    std::map<std::string, DeviceVector3D>>
 get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
-    std::map<std::string, std::vector<std::vector<data_type_t>>> arrays_2d;
-    std::map<std::string, std::vector<std::vector<std::vector<data_type_t>>>> arrays_3d;
+    std::map<std::string, Vector2D> arrays_2d;
+    std::map<std::string, Vector3D> arrays_3d;
 
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>> device_arrays_2d;
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>> device_arrays_3d;
+    std::map<std::string, DeviceVector2D> device_arrays_2d;
+    std::map<std::string, DeviceVector3D> device_arrays_3d;
 
     for (const auto& pair : all_arrays) {
         const std::string& array_name = pair.first;
@@ -111,8 +111,8 @@ get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
     
         if (array.shape.size() == 2) {
             // 2D array, likely labels
-            std::vector<std::vector<data_type_t>> one_hot_labels2d;
-            std::vector<thrust::device_vector<data_type_t>> dvec_one_hot2d;
+            Vector2D one_hot_labels2d;
+            DeviceVector2D dvec_one_hot2d;
             try {
                 load_array_to_vectors<data_type_t>(array, one_hot_labels2d);
                 arrays_2d[array_name] = one_hot_labels2d; // Store in 2D map
@@ -133,8 +133,8 @@ get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
             plot_histogram_to_image(label_histogram, CHEST_LABELS, array_name + "_hist.png");
         } else if (array.shape.size() == 3) {
             // 3D array, likely images
-            std::vector<std::vector<std::vector<data_type_t>>> list_image;
-            std::vector<thrust::device_vector<data_type_t>> dvec_image;
+            Vector3D list_image;
+            DeviceVector3D dvec_image;
             std::cout << " Loading 3D image data.";
             try {
                 load_array_to_vectors<data_type_t>(array, list_image);
