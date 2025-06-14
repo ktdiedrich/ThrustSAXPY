@@ -170,8 +170,8 @@ inline void load_array_to_vectors_3d(const cnpy::NpyArray& array, std::vector<th
  * @param encoding Image format (e.g., "png", "jpg").
  */
 template<typename DataType>
-void write_image(const std::string& array_name,
-                 const std::vector<std::vector<DataType>>& vec2d, const int slice_numer,
+void write_image(const std::string& filename,
+                 const std::vector<std::vector<DataType>>& vec2d,
                  const int cv_type = CV_8UC1,
                  const std::string encoding = "png") {
     // TODO: CV_8UC1 is  macro for 8-bit single channel image
@@ -179,7 +179,6 @@ void write_image(const std::string& array_name,
     for (size_t i = 0; i < vec2d.size(); ++i)
         for (size_t j = 0; j < vec2d[0].size(); ++j)
             img.at<DataType>(i, j) = vec2d[i][j];
-    std::string filename = array_name + "_slice" + std::to_string(slice_numer) + "." + encoding;
     if (encoding == "jpg" || encoding == "jpeg") {
         std::vector<int> params = { cv::IMWRITE_JPEG_QUALITY, 95 };
         cv::imwrite(filename, img, params);
@@ -271,3 +270,41 @@ std::tuple<
     std::map<std::string, DeviceVector2D>,
     std::map<std::string, DeviceVector3D>> 
     get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays);
+
+
+inline size_t find_hot_index(const std::vector<data_type_t>& one_hot_label) {
+    auto it = std::find_if(one_hot_label.begin(), one_hot_label.end(),
+                           [](data_type_t v) { return v != data_type_t(0); });
+    if (it != one_hot_label.end()) {
+        return std::distance(one_hot_label.begin(), it);
+    }
+    return 0;
+}
+
+
+inline void plot_first_images_by_label(
+    const std::map<size_t, std::string>& labels,
+    const Vector3D& vec3d,
+    const Vector2D& vec2d,
+    const std::string& filename_prefix,
+    int up_to_first_x = 10,
+    int cv_type = CV_8UC1,
+    const std::string encoding = "png")
+{
+    if (vec3d.empty() || vec2d.empty()) {
+        std::cerr << "Error: vec3d or vec2d is empty." << std::endl;
+        return;
+    }
+    if (vec3d.size() != vec2d.size()) {
+        std::cerr << "Error: vec3d and vec2d must have the same size." << std::endl;
+        return;
+    }
+    up_to_first_x = std::min<size_t>(up_to_first_x, vec3d.size());
+    for (size_t i = 0; i < up_to_first_x; ++i) {
+        auto one_hot_label = vec2d[i];
+        auto hot_index = find_hot_index(one_hot_label);
+        std::string label = labels.at(hot_index); // Use at() to ensure it throws if not found
+        std::string filename = filename_prefix + "_" + label + "_slice" + std::to_string(i) + "." + encoding;
+        write_image<data_type_t>(filename, vec3d[i], cv_type, encoding);
+    }
+}

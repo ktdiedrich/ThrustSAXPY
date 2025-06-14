@@ -22,5 +22,14 @@ int main(int argc, char** argv) {
     std::map<std::string, std::vector<thrust::device_vector<data_type_t>>> device_images_3d;
     std::tie(one_hot_labels_2d, images_3d, device_one_hot_labels_2d, device_images_3d) = get_vector_maps(all_arrays);
     
+    plot_first_images_by_label(
+        CHEST_LABELS,
+        images_3d["train_images"],
+        one_hot_labels_2d["train_labels"],
+        "train_images",
+        10,
+        CV_8UC1,
+        "png"
+    );
     return 0;
 }

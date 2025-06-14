@@ -148,7 +148,9 @@ get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
             std::cout << " Loaded 3D image with " << list_image.size() << " slices.";
             std::cout << " First 3D value=" << static_cast<int>(list_image[0][0][0]);
             const int slice_number = 0;
-            write_image<data_type_t>(array_name, list_image[slice_number], slice_number, CV_8UC1, "png");
+            std::string encoding = "png";
+            std::string filename = array_name + "_slice_" + std::to_string(slice_number) + "." + encoding;
+            write_image<data_type_t>(filename, list_image[slice_number], CV_8UC1, encoding);
         } else {
             std::cerr << "Unsupported array shape size: " << array.shape.size() << std::endl;
             continue; // Skip unsupported shapes
