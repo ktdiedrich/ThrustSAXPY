@@ -272,22 +272,23 @@ std::tuple<
     get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays);
 
 
+template<typename T>
 inline size_t find_hot_index(const std::vector<data_type_t>& one_hot_label) {
     auto it = std::find_if(one_hot_label.begin(), one_hot_label.end(),
-                           [](data_type_t v) { return v != data_type_t(0); });
+                           [](T v) { return v != T(0); });
     if (it != one_hot_label.end()) {
         return std::distance(one_hot_label.begin(), it);
     }
     return 0;
 }
 
-
+template<typename T>
 inline void plot_first_images_by_label(
     const std::map<size_t, std::string>& labels,
     const Vector3D& vec3d,
     const Vector2D& vec2d,
     const std::string& filename_prefix,
-    int up_to_first_x = 10,
+    size_t up_to_first_x = 10,
     int cv_type = CV_8UC1,
     const std::string encoding = "png")
 {
@@ -302,9 +303,9 @@ inline void plot_first_images_by_label(
     up_to_first_x = std::min<size_t>(up_to_first_x, vec3d.size());
     for (size_t i = 0; i < up_to_first_x; ++i) {
         auto one_hot_label = vec2d[i];
-        auto hot_index = find_hot_index(one_hot_label);
+        auto hot_index = find_hot_index<T>(one_hot_label);
         std::string label = labels.at(hot_index); // Use at() to ensure it throws if not found
         std::string filename = filename_prefix + "_" + label + "_slice" + std::to_string(i) + "." + encoding;
-        write_image<data_type_t>(filename, vec3d[i], cv_type, encoding);
+        write_image<T>(filename, vec3d[i], cv_type, encoding);
     }
 }
