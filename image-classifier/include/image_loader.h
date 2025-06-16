@@ -163,10 +163,10 @@ inline void load_array_to_vectors_3d(const cnpy::NpyArray& array, std::vector<th
 /**
  * Write a 2D vector to an image file using OpenCV.
  * The vector is assumed to represent a grayscale image.
- * @param array_name Base name for the output file (without extension).
+ * @param filename filename for the output file.
  * @param vec2d 2D vector containing pixel values.
- * @param slice_numer Slice number to append to the filename.
- * @param cv_type OpenCV type for the image (default is CV_8UC1).
+ * @param cv_type OpenCV type for the image (default is CV_8UC1). 
+ * CV_8UC1 is a typedef for 8-bit single channel image
  * @param encoding Image format (e.g., "png", "jpg").
  */
 template<typename DataType>
@@ -174,7 +174,6 @@ void write_image(const std::string& filename,
                  const std::vector<std::vector<DataType>>& vec2d,
                  const int cv_type = CV_8UC1,
                  const std::string encoding = "png") {
-    // TODO: CV_8UC1 is  macro for 8-bit single channel image
     cv::Mat img(vec2d.size(), vec2d[0].size(), cv_type);
     for (size_t i = 0; i < vec2d.size(); ++i)
         for (size_t j = 0; j < vec2d[0].size(); ++j)
@@ -272,6 +271,12 @@ std::tuple<
     get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays);
 
 
+/**
+ * Find the index of the 'hot' (nonzero) entry in a one-hot encoded vector.
+ * This is used to determine which label is represented by the one-hot vector.
+ * @param one_hot_label The one-hot encoded vector.
+ * @return The index of the 'hot' entry, or 0 if none found.
+ */
 template<typename T>
 inline size_t find_hot_index(const std::vector<data_type_t>& one_hot_label) {
     auto it = std::find_if(one_hot_label.begin(), one_hot_label.end(),
@@ -282,6 +287,19 @@ inline size_t find_hot_index(const std::vector<data_type_t>& one_hot_label) {
     return 0;
 }
 
+/** 
+ * Plot the first few images by label.
+ * This function takes a vector of 3D images and a vector of one-hot encoded labels,
+ * and writes the first few images for each label to files.
+ * @param labels Map from label index to label string.
+ * @param vec3d Vector of 3D images (each image is a 2D slice).
+ * @param vec2d Vector of one-hot encoded labels corresponding to the images.
+ * @param filename_prefix Prefix for the output filenames.
+ * @param up_to_first_x Number of images to plot per label (default is 10).
+ * @param cv_type OpenCV type for the image (default is CV_8UC1).
+ * @param encoding Image format (default is "png"). 
+ *
+ */
 template<typename T>
 inline void plot_first_images_by_label(
     const std::map<size_t, std::string>& labels,
@@ -310,7 +328,17 @@ inline void plot_first_images_by_label(
     }
 }
 
-
+/**
+ * Plot one example image for each label.
+ * This function takes a vector of 3D images and a vector of one-hot encoded labels,
+ * and writes one example image for each label to a single output file.
+ * @param labels Map from label index to label string.
+ * @param vec3d Vector of 3D images (each image is a 2D slice).
+ * @param vec2d Vector of one-hot encoded labels corresponding to the images.
+ * @param out_filename Output filename for the grid image.
+ * @param cv_type OpenCV type for the image (default is CV_8UC1).
+ * @param scale Scale factor for the images in the grid (default is 1). 
+ */
 template<typename T>
 inline void plot_one_example_per_label(
     const std::map<size_t, std::string>& labels,

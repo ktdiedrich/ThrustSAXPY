@@ -122,20 +122,14 @@ get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
                 std::cerr << "Error loading 2D array: " << ex.what() << std::endl;
                 continue; // Skip to next array
             }
-            std::cout << " Loaded 2D labels with " << one_hot_labels2d.size() << " rows.";
+            std::cout << " Loaded 1-hot labels with " << one_hot_labels2d.size() << " rows.";
             auto label_histogram = one_hot_histogram<data_type_t>(one_hot_labels2d);
-            std::cout << "\n1-hot hist: ";
-            for (const auto& kv : label_histogram) {
-                std::cout << kv.first << ":" << kv.second << " | ";
-            }
-            std::cout << std::endl;
             print_one_hot_histogram_with_labels<data_type_t>(one_hot_labels2d, CHEST_LABELS);
             plot_histogram_to_image(label_histogram, CHEST_LABELS, array_name + "_hist.png");
         } else if (array.shape.size() == 3) {
             // 3D array, likely images
             Vector3D list_image;
             DeviceVector3D dvec_image;
-            std::cout << " Loading 3D image data.";
             try {
                 load_array_to_vectors<data_type_t>(array, list_image);
                 arrays_3d[array_name] = list_image; // Store in 3D map
@@ -145,12 +139,7 @@ get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
                 std::cerr << "Error loading 3D array: " << ex.what() << std::endl;
                 continue; // Skip to next array
             }
-            std::cout << " Loaded 3D image with " << list_image.size() << " slices.";
-            std::cout << " First 3D value=" << static_cast<int>(list_image[0][0][0]);
-            const int slice_number = 0;
-            std::string encoding = "png";
-            std::string filename = array_name + "_slice_" + std::to_string(slice_number) + "." + encoding;
-            write_image<data_type_t>(filename, list_image[slice_number], CV_8UC1, encoding);
+            std::cout << " Loaded image stack with " << list_image.size() << " slices.";
         } else {
             std::cerr << "Unsupported array shape size: " << array.shape.size() << std::endl;
             continue; // Skip unsupported shapes
