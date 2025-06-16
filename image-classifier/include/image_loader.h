@@ -309,3 +309,76 @@ inline void plot_first_images_by_label(
         write_image<T>(filename, vec3d[i], cv_type, encoding);
     }
 }
+
+
+template<typename T>
+inline void plot_one_example_per_label(
+    const std::map<size_t, std::string>& labels,
+    const Vector3D& vec3d,
+    const Vector2D& vec2d,
+    const std::string& out_filename,
+    int cv_type = CV_8UC1,
+    int scale = 1)
+{
+    if (vec3d.empty() || vec2d.empty()) {
+        std::cerr << "Error: vec3d or vec2d is empty." << std::endl;
+        return;
+    }
+    if (vec3d.size() != vec2d.size()) {
+        std::cerr << "Error: vec3d and vec2d must have the same size." << std::endl;
+        return;
+    }
+
+    // Find one example index for each label
+    std::map<size_t, size_t> label_to_index;
+    for (size_t i = 0; i < vec2d.size(); ++i) {
+        size_t hot_index = find_hot_index<T>(vec2d[i]);
+        if (label_to_index.count(hot_index) == 0) {
+            label_to_index[hot_index] = i;
+        }
+    }
+
+    size_t num_labels = label_to_index.size();
+    if (num_labels == 0) {
+        std::cerr << "No labels found." << std::endl;
+        return;
+    }
+
+    // Assume all images are the same size
+    int img_rows = vec3d[0].size();
+    int img_cols = vec3d[0][0].size();
+
+    int scaled_rows = img_rows * scale;
+    int scaled_cols = img_cols * scale;
+
+    // Create a grid image (1 row, num_labels columns)
+    int grid_rows = scaled_rows;
+    int grid_cols = scaled_cols * num_labels;
+    cv::Mat grid_img(grid_rows, grid_cols, cv_type, cv::Scalar(0));
+
+    size_t col = 0;
+    for (const auto& kv : label_to_index) {
+        size_t label_idx = kv.first;
+        size_t img_idx = kv.second;
+        // Convert vec3d[img_idx] to cv::Mat
+        cv::Mat img(img_rows, img_cols, cv_type);
+        for (int r = 0; r < img_rows; ++r) {
+            for (int c = 0; c < img_cols; ++c) {
+                img.at<T>(r, c) = vec3d[img_idx][r][c];
+            }
+        }
+        // Scale the image
+        cv::Mat img_scaled;
+        cv::resize(img, img_scaled, cv::Size(scaled_cols, scaled_rows), 0, 0, cv::INTER_NEAREST);
+
+        // Copy to grid
+        img_scaled.copyTo(grid_img(cv::Rect(col * scaled_cols, 0, scaled_cols, scaled_rows)));
+        // Put label text
+        std::string label_text = labels.at(label_idx);
+        cv::putText(grid_img, label_text, cv::Point(col * scaled_cols + 5, 25),
+                    cv::FONT_HERSHEY_PLAIN, 0.8, cv::Scalar(255), 2);
+        ++col;
+    }
+
+    cv::imwrite(out_filename, grid_img);
+}

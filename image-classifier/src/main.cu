@@ -31,5 +31,13 @@ int main(int argc, char** argv) {
         CV_8UC1,
         "png"
     );
+    plot_one_example_per_label<data_type_t>(
+        CHEST_LABELS,
+        images_3d["train_images"],
+        one_hot_labels_2d["train_labels"],
+        "class_examples_train_images.png",
+        CV_8UC1,
+        4
+    );
     return 0;
 }
