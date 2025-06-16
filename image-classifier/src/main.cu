@@ -16,10 +16,10 @@ int main(int argc, char** argv) {
     }
     std::map<std::string, cnpy::NpyArray> all_arrays = read_all_npz_arrays(argv[1]);
 
-    std::map<std::string, std::vector<std::vector<data_type_t>>> one_hot_labels_2d;
-    std::map<std::string, std::vector<std::vector<std::vector<data_type_t>>>> images_3d;
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>> device_one_hot_labels_2d;
-    std::map<std::string, std::vector<thrust::device_vector<data_type_t>>> device_images_3d;
+    std::map<std::string, Vector2D> one_hot_labels_2d;
+    std::map<std::string, Vector3D> images_3d;
+    std::map<std::string, DeviceVector2D> device_one_hot_labels_2d;
+    std::map<std::string, DeviceVector3D> device_images_3d;
     std::tie(one_hot_labels_2d, images_3d, device_one_hot_labels_2d, device_images_3d) = get_vector_maps(all_arrays);
     
     plot_one_example_per_label<data_type_t>(
