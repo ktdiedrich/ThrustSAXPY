@@ -139,7 +139,7 @@ get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
                 std::cerr << "Error loading 3D array: " << ex.what() << std::endl;
                 continue; // Skip to next array
             }
-            std::cout << " Loaded image stack with " << list_image.size() << " slices.";
+            std::cout << " Loaded image stack with " << list_image.size() << " slices. ";
         } else {
             std::cerr << "Unsupported array shape size: " << array.shape.size() << std::endl;
             continue; // Skip unsupported shapes
