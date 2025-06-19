@@ -61,4 +61,4 @@ set(SOURCES
 add_executable(image_classifier ${SOURCES})
 target_include_directories(image_classifier PRIVATE ${cnpy_SOURCE_DIR} ${CUDNN_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS})
 target_compile_options(image_classifier PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-extended-lambda>)
-target_link_libraries(image_classifier PRIVATE ${OpenCV_LIBS} cnpy z)
+target_link_libraries(image_classifier PRIVATE ${OpenCV_LIBS} cnpy z ${CUDNN_LIBRARY} ${CUDA_LIBRARIES} pthread)
