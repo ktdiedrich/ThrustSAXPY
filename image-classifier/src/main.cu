@@ -30,5 +30,20 @@ int main(int argc, char** argv) {
         CV_8UC1,
         4
     );
+
+    std::string model_path = "trained_model"; // Placeholder for model path
+    std::string output_path = "training_output"; // Placeholder for output path
+    train_validate_classifier(
+        device_images_3d["train_images"],
+        device_one_hot_labels_2d["train_labels"],
+        device_images_3d["val_images"],
+        device_one_hot_labels_2d["val_labels"],
+        model_path,
+        output_path,
+        0.001f, // learning rate
+        10,     // epochs
+        32,     // batch size
+        0.9f    // momentum
+    );
     return 0;
 }

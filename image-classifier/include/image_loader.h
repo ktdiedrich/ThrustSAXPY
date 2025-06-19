@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <iostream>
 #include <thrust/device_vector.h>
-#include <thrust/host_vector.h>
 #include <tuple>
 
 
@@ -409,4 +408,22 @@ inline void plot_one_example_per_label(
     }
 
     cv::imwrite(out_filename, grid_img);
+}
+
+
+inline void train_validate_classifier(const DeviceVector3D& train_images,
+                                     const DeviceVector2D& train_labels,
+                                     const DeviceVector3D& val_images,
+                                     const DeviceVector2D& val_labels,
+                                     const std::string& model_path,
+                                     const std::string& output_path, 
+                                    const float learning_rate = 0.001f,
+                                    const int epochs = 10,
+                                    const int batch_size = 32,
+                                    const float momentum = 0.9f)
+{
+    // Placeholder for classifier training and validation logic
+    // This function should implement the actual training and validation process
+    // using the provided images and labels.
+    std::cout << "Training and validating classifier..." << std::endl;
 }
