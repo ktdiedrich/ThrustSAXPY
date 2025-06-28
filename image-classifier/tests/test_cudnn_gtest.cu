@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <cudnn.h>
 #include "minimal.h"
+#include "graph.h"
 
 
 TEST(CuDNNTest, CanCreateHandle) {
@@ -22,6 +23,14 @@ TEST(CuDNNTest, SigmoidActivationRuns) {
     sigmoid_activate_tensor();
     SUCCEED();
 }
+
+
+TEST(CuDNNTest, GraphCreation) {
+    // Test if the graph can be created without errors.
+    create_graph();
+    SUCCEED();
+}
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

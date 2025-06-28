@@ -48,6 +48,7 @@ include_directories(${CUDNN_INCLUDE_DIR})
 set(TEST_CUDNN_SOURCES
     tests/test_cudnn_gtest.cu
     src/minimal.cu
+    src/graph.cu
 )
 add_executable(test_cudnn_gtest ${TEST_CUDNN_SOURCES})
 target_include_directories(test_cudnn_gtest PRIVATE ${CUDNN_INCLUDE_DIR})
