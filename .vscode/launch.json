@@ -5,6 +5,31 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "(cudagdb) test_cudnn_gtest",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/image-classifier/test_cudnn_gtest",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/image-classifier",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/cuda-gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
             "name": "(gdb) test_gtest",
             "type": "cppdbg",
             "request": "launch",
@@ -33,9 +58,9 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/image-classifier/image_classifier",
-            "args": [],
+            "args": ["${env:HOME}/data/medMNIST/chestmnist.npz"],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/build/image-classifier",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
@@ -117,8 +142,8 @@
             "miDebuggerPath": "/usr/bin/cuda-gdb",
             "setupCommands": [
                 {
-                    "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
+                    "description": "Enable pretty-printing for gdb",
                     "ignoreFailures": true
                 },
                 {

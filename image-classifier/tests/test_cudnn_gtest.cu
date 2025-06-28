@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include <cudnn.h>
+#include "minimal.h"
+
 
 TEST(CuDNNTest, CanCreateHandle) {
     cudnnHandle_t handle;
@@ -12,6 +14,13 @@ TEST(CuDNNTest, CanCreateHandle) {
 
 TEST(CuDNNTest, VersionIsNonZero) {
     EXPECT_GT(CUDNN_VERSION, 0);
+}
+
+TEST(CuDNNTest, SigmoidActivationRuns) {
+    // This will run your minimal sigmoid activation example.
+    // If it doesn't throw or crash, the test passes.
+    sigmoid_activate_tensor();
+    SUCCEED();
 }
 
 int main(int argc, char **argv) {

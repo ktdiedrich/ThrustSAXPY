@@ -45,12 +45,17 @@ add_executable(test_gtest tests/test_gtest.cpp)
 target_link_libraries(test_gtest gtest_main)
 
 include_directories(${CUDNN_INCLUDE_DIR})
-add_executable(test_cudnn_gtest tests/test_cudnn_gtest.cu)
+set(TEST_CUDNN_SOURCES
+    tests/test_cudnn_gtest.cu
+    src/minimal.cu
+)
+add_executable(test_cudnn_gtest ${TEST_CUDNN_SOURCES})
 target_include_directories(test_cudnn_gtest PRIVATE ${CUDNN_INCLUDE_DIR})
 target_compile_options(test_cudnn_gtest PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:--expt-extended-lambda>)
 target_link_libraries(test_cudnn_gtest PRIVATE ${CUDNN_LIBRARY} gtest_main pthread ${CUDA_LIBRARIES})
 
 gtest_discover_tests(test_gtest)
+gtest_discover_tests(test_cudnn_gtest)
 
 set(SOURCES
     src/main.cu
