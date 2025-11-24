@@ -26,7 +26,16 @@ Linux or WSL on Windows
 DEB package management
 ```
 sudo apt update
-sudo apt install cmake g++ zlib1g-dev gdb nvidia-cuda-toolkit cuda-gdb nvidia-cudnn libcudnn-frontend-dev libopencv-dev python3-pyqt5
+sudo apt install cmake g++ zlib1g-dev gdb nvidia-cuda-toolkit nvidia-cuda-gdb nvidia-cudnn libcudnn-frontend-dev libopencv-dev python3-pyqt5 build-essential
+
+# If CMake fails with "No CMAKE_CXX_COMPILER could be found" you need to ensure
+# a system C++ compiler is available (install `build-essential` / `g++`) or point
+# CMake at an explicit compiler path.
+
+# Example checks and fixes:
+#  - Check for g++:  which g++ && g++ --version
+#  - Install compiler: sudo apt install build-essential
+#  - Force CMake to use a specific compiler: cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++
 ```
 
 ## Compile
