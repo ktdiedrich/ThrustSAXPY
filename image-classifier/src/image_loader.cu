@@ -6,6 +6,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+#include <cudnn_frontend.h>
 
 
 std::map<std::string, cnpy::NpyArray> read_all_npz_arrays(
@@ -147,4 +148,40 @@ get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
         std::cout << std::endl;
     }
     return std::make_tuple(arrays_2d, arrays_3d, device_arrays_2d, device_arrays_3d);
+}
+
+
+void get_image_label_tensors(const std::map<std::string, cnpy::NpyArray>& all_arrays) {
+    bool image_found = false, label_found = false;
+
+    for (const auto& pair : all_arrays) {
+        const cnpy::NpyArray& array = pair.second;
+        if (!image_found && array.shape.size() == 3) {
+            std::vector<int64_t> dims(array.shape.begin(), array.shape.end());
+            auto image_tensor = cudnn_frontend::TensorBuilder()
+                .setDim(dims.size(), dims.data())
+                .setId(0)
+                .setAlignment(16)
+                .setDataType(CUDNN_DATA_FLOAT)
+                .build();
+            std::cout << "Created image tensor with dims: ";
+            for (auto d : dims) std::cout << d << " ";
+            std::cout << std::endl;
+            image_found = true;
+        } else if (!label_found && array.shape.size() == 2) {
+            std::vector<int64_t> dims(array.shape.begin(), array.shape.end());
+            auto label_tensor = cudnn_frontend::TensorBuilder()
+                .setDim(dims.size(), dims.data())
+                .setId(1)
+                .setAlignment(16)
+                .setDataType(CUDNN_DATA_FLOAT)
+                .build();
+            std::cout << "Created label tensor with dims: ";
+            for (auto d : dims) std::cout << d << " ";
+            std::cout << std::endl;
+            label_found = true;
+        }
+        if (image_found && label_found)
+            break;
+    }
 }

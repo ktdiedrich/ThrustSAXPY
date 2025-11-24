@@ -21,7 +21,9 @@ int main(int argc, char** argv) {
     std::map<std::string, DeviceVector2D> device_one_hot_labels_2d;
     std::map<std::string, DeviceVector3D> device_images_3d;
     std::tie(one_hot_labels_2d, images_3d, device_one_hot_labels_2d, device_images_3d) = get_vector_maps(all_arrays);
-    
+
+    get_image_label_tensors(all_arrays);
+
     plot_one_example_per_label<data_type_t>(
         CHEST_LABELS,
         images_3d["train_images"],

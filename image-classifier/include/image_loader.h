@@ -269,6 +269,16 @@ std::tuple<
     std::map<std::string, DeviceVector3D>> 
     get_vector_maps(const std::map<std::string, cnpy::NpyArray>& all_arrays);
 
+/** * Get image and label tensors from a map of NPY arrays.
+ * This function extracts the image and label tensors from the provided NPY arrays.
+ * It assumes that the images are stored in 3D arrays and the labels in 2D arrays.
+ * @param all_arrays Map of NPY arrays where keys are array names and values are NpyArray objects.
+ * @return A tuple containing:
+ * - A map of image tensors (3D arrays).
+ * - A map of label tensors (2D arrays).
+ */
+void get_image_label_tensors(const std::map<std::string, cnpy::NpyArray>& all_arrays);
+
 
 /**
  * Find the index of the 'hot' (nonzero) entry in a one-hot encoded vector.
